@@ -26,21 +26,24 @@ function check_claims(app, token) {
   const p = token.payload, now_sec = now() / 1000;
   return p &&
       p.iss == `https://${app.team_domain}` &&
-      p.aud == app.aud &&
+      (Array.isArray(p.aud) ? p.aud.includes(app.aud)
+                            : p.aud === app.aud) &&
       (!p.exp || p.exp > now_sec) &&
       (!p.nbf || p.nbf < now_sec);
 };
 
 async function get_public_key(app, kid) {
+  const cache_set_name = `njs_cf_auth:keys:${app.team_domain}`;
   const get_cached = () => {
-    const cached = ngx.shared.cfauth.get("keys");
+    const cached = ngx.shared.cfauth.get(cache_set_name);
     return cached && JSON.parse(cached).find(k => k.kid === kid);
   };
   const do_fetch = async () => {
     const res = await ngx.fetch(
         `https://${app.team_domain}/cdn-cgi/access/certs`);
     const keys = (await res.json()).keys;
-    ngx.shared.cfauth.set("keys", JSON.stringify(keys), cache_timeout_ms);
+    ngx.shared.cfauth.set(cache_set_name, JSON.stringify(keys),
+                          cache_timeout_ms);
     return keys.find(k => k.kid === kid);
   };
   const key = get_cached() || await do_fetch();

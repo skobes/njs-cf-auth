@@ -113,7 +113,7 @@ tests({
     assert_equals(last_code, 200);
     assert_equals(fetch_count, 1);
 
-    cache.keys = '[{"kid":"bad"}]';
+    cache[`njs_cf_auth:keys:${team_domain}`] = '[{"kid":"bad"}]';
     await auth.validate(r);
     assert_equals(last_code, 200);
     assert_equals(fetch_count, 2);
