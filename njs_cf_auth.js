@@ -1,7 +1,7 @@
 // njs_cf_auth.js
 // nginx njs hook to validate Cloudflare JWT (see README.md).
 
-const now = () => globalThis.mock_now || Date.now();
+const now = () => globalThis.mock_now ?? Date.now();
 const b64_to_buf = b64 => Buffer.from(b64, "base64url");
 const b64_to_json = b64 => JSON.parse(b64_to_buf(b64).toString());
 const invalid_token = { code: 403 };
@@ -46,7 +46,7 @@ async function get_public_key(app, kid) {
                           cache_timeout_ms);
     return keys.find(k => k.kid === kid);
   };
-  const key = get_cached() || await do_fetch();
+  const key = get_cached() ?? await do_fetch();
   if (!key || key.alg != "RS256")
     return null;
   return crypto.subtle.importKey("jwk", key,
@@ -55,7 +55,7 @@ async function get_public_key(app, kid) {
 };
 
 async function is_signature_valid(app, token) {
-  const kid = token.header && token.header.kid;
+  const kid = token.header?.kid;
   if (!kid)
     return false;
   const key = await get_public_key(app, kid);
