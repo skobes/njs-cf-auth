@@ -2,7 +2,7 @@
 
 Validates auth tokens in the `Cf-Access-Jwt-Assertion` header. See [Validate JWTs](https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/) for background.
 
-Unlike Cloudflare's (Node.js) sample code, this module works with the [njs engine](https://nginx.org/en/docs/njs/engine.html).
+Unlike Cloudflare's (Node.js) sample code, this module works with the [njs engine](https://nginx.org/en/docs/njs/engine.html) and the [QuickJS engine](https://bellard.org/quickjs/).
 
 1. Set up [nginx](https://nginx.org/en/docs/).
 2. Install [nginx-module-njs](https://nginx.org/en/docs/njs/install.html).

@@ -1,5 +1,3 @@
-#!/usr/bin/njs
-
 import auth from "./njs_cf_auth.js";
 
 async function tests(map) {
